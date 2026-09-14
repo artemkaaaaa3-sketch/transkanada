@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Страница не&nbsp;найдена&nbsp;— Трансканада</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230B1512'/%3E%3Cpath d='M16 5 23 17h-4l5.5 9h-17L13 17H9z' fill='%23D9A24A'/%3E%3C/svg%3E">
+<style>
+/* Пути от корня: хостинг отдаёт эту страницу на любом несуществующем адресе */
+@font-face{font-family:"Commissioner";src:url("/transkanada/fonts/commissioner.woff2") format("woff2");font-weight:600 900;font-display:swap}
+@font-face{font-family:"Golos Text";src:url("/transkanada/fonts/golos-text.woff2") format("woff2");font-weight:400 600;font-display:swap}
+:root{--night:#0B1512;--frost:#E8EEEA;--lichen:#A3B5AC;--larch:#D9A24A;--larch-hi:#E6B762;--pad:clamp(16px,4vw,48px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;min-height:100svh;display:flex;flex-direction:column;background:var(--night);color:var(--frost);font:400 clamp(16px,15.5px + .1vw,17px)/1.45 "Golos Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,p{margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--larch);outline-offset:3px}
+.wrap{width:100%;max-width:calc(1320px + var(--pad) * 2);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
+.top{padding-top:20px}
+.logo{display:inline-flex;align-items:center;gap:10px;min-height:44px;text-decoration:none;font:800 clamp(20px,19px + .22vw,22px)/1 "Commissioner","Arial Narrow",Arial,sans-serif}
+.logo svg{width:30px;height:30px}
+.main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding-top:clamp(48px,8vw,96px);padding-bottom:clamp(72px,12vw,160px)}
+.code{font:800 clamp(20px,19px + .22vw,22px)/1 "Commissioner","Arial Narrow",Arial,sans-serif;color:var(--larch)}
+h1{margin-top:16px;font:800 clamp(44px,26px + 4.8vw,96px)/.95 "Commissioner","Arial Narrow",Arial,sans-serif;letter-spacing:-.02em;max-width:12ch}
+.main p.text{max-width:36em;margin-top:22px;color:var(--lichen)}
+.acts{display:flex;flex-wrap:wrap;align-items:center;gap:12px 28px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:10px 26px;border-radius:999px;background:var(--larch);color:var(--night);font-weight:600;text-decoration:none}
+.btn:hover{background:var(--larch-hi)}
+.link{display:inline-flex;align-items:center;min-height:44px;font-weight:600;text-decoration:underline;text-underline-offset:6px}
+</style>
+</head>
+<body>
+<header class="top wrap"><a class="logo" href="/transkanada/" aria-label="Трансканада, на главную"><svg viewBox="0 0 30 30" aria-hidden="true" focusable="false"><path d="M15 2.5 23.5 16.5H18.8L25.5 26.5H4.5L11.2 16.5H6.5Z" fill="#D9A24A"/><path d="M1.5 28.2H28.5" stroke="#E8EEEA" stroke-width="1.6" stroke-linecap="round"/></svg><span>Трансканада</span></a></header>
+<main class="main wrap">
+  <p class="code">404</p>
+  <h1>Здесь только тундра</h1>
+  <p class="text">Такой страницы нет: ссылка устарела или&nbsp;в&nbsp;адресе опечатка. Маршруты и&nbsp;даты&nbsp;— на&nbsp;главной.</p>
+  <div class="acts"><a class="btn" href="/transkanada/">На&nbsp;главную</a><a class="link" href="/transkanada/tours.html">Все&nbsp;туры</a></div>
+</main>
+</body>
+</html>
