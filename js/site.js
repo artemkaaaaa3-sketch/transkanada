@@ -473,21 +473,17 @@
       });
 
       var dayPin = q('.day__pin'), track = q('#dayTrack'), rail = q('#dayRail');
-      // Кадр отстаёт от своей рамки: рамка уезжает влево, фото в ней сдвигается навстречу, и лента читается
-      // как вид из окна, а не как ряд плоских картинок. Картинку растягиваем на 130 % вдоль той оси, по которой
-      // она и так шире рамки: кадрирование в покое то же, что без движения, а края фото не показываются.
-      // max-width из общего сброса снимаем: с ним ширина 130 % обрезается до 100 %, и сдвиг открывает край кадра.
+      // Кадры ленты сдвигаются внутри рамок, пока лента едет: она читается как вид из окна, а не как ряд плоских
+      // картинок. 15 сентября 2026 Артём заметил, что у водопада (вертикальный кадр) сдвиг шёл поперёк ленты и бросался
+      // в глаза, а у горизонтальных кадров шёл вдоль ленты и терялся в её движении. Теперь все кадры сдвигаются одинаково:
+      // по вертикали и на одну долю рамки, с запасом у края. Разные оси и доли в одном ряду ловит hooks/checks/pan-uniform.js.
+      // max-width и max-height из общего сброса снимаем: с ними высота 120 % обрезается до 100 %, и сдвиг открывает край кадра.
       var panMoments = function (trig) {
         qa('.moment', track).forEach(function (m) {
           var pic = q('.moment__pic', m), img = pic && q('img', pic);
           if (!img || !pic.clientHeight) return;
-          var ratio = (+img.getAttribute('width') || img.naturalWidth || 1) / (+img.getAttribute('height') || img.naturalHeight || 1);
-          var across = ratio >= pic.clientWidth / pic.clientHeight, axis = across ? 'xPercent' : 'yPercent';
-          gsap.set(img, across ? { position: 'absolute', top: 0, left: '-15%', width: '130%', height: '100%', maxWidth: 'none' }
-                               : { position: 'absolute', left: 0, top: '-15%', width: '100%', height: '130%', maxHeight: 'none' });
-          var from = {}, to = { ease: 'none', scrollTrigger: trig(m) };
-          from[axis] = -10; to[axis] = 10;
-          gsap.fromTo(img, from, to);
+          gsap.set(img, { position: 'absolute', left: 0, top: '-10%', width: '100%', height: '120%', maxWidth: 'none', maxHeight: 'none' });
+          gsap.fromTo(img, { yPercent: -7 }, { yPercent: 7, ease: 'none', scrollTrigger: trig(m) });
         });
       };
       if (c.wide && dayPin && track && rail) {
