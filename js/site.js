@@ -468,6 +468,23 @@
       });
 
       var dayPin = q('.day__pin'), track = q('#dayTrack'), rail = q('#dayRail');
+      // Кадр отстаёт от своей рамки: рамка уезжает влево, фото в ней сдвигается навстречу, и лента читается
+      // как вид из окна, а не как ряд плоских картинок. Картинку растягиваем на 130 % вдоль той оси, по которой
+      // она и так шире рамки: кадрирование в покое то же, что без движения, а края фото не показываются.
+      // max-width из общего сброса снимаем: с ним ширина 130 % обрезается до 100 %, и сдвиг открывает край кадра.
+      var panMoments = function (trig) {
+        qa('.moment', track).forEach(function (m) {
+          var pic = q('.moment__pic', m), img = pic && q('img', pic);
+          if (!img || !pic.clientHeight) return;
+          var ratio = (+img.getAttribute('width') || img.naturalWidth || 1) / (+img.getAttribute('height') || img.naturalHeight || 1);
+          var across = ratio >= pic.clientWidth / pic.clientHeight, axis = across ? 'xPercent' : 'yPercent';
+          gsap.set(img, across ? { position: 'absolute', top: 0, left: '-15%', width: '130%', height: '100%', maxWidth: 'none' }
+                               : { position: 'absolute', left: 0, top: '-15%', width: '100%', height: '130%', maxHeight: 'none' });
+          var from = {}, to = { ease: 'none', scrollTrigger: trig(m) };
+          from[axis] = -10; to[axis] = 10;
+          gsap.fromTo(img, from, to);
+        });
+      };
       if (c.wide && dayPin && track && rail) {
         // левое поле ленты повторяем справа: в конце последняя карточка не упирается в край окна
         var dist = function () {
@@ -479,14 +496,22 @@
           var hh = head ? head.getBoundingClientRect().height : 0, free = innerHeight - hh - dayPin.offsetHeight;
           return 'top ' + Math.round(hh + Math.max(0, free) / 2) + 'px';
         };
-        gsap.to(track, {
+        var dayTween = gsap.to(track, {
           x: function () { return -dist(); }, ease: 'none',
           scrollTrigger: {
             trigger: dayPin, start: dayStart, pin: true, scrub: 0.6, invalidateOnRefresh: true,
             end: function () { return '+=' + dist(); }
           }
         });
+        panMoments(function (m) {
+          return { trigger: m, containerAnimation: dayTween, start: 'left right', end: 'right left', scrub: 0.6 };
+        });
         if (dayPin.closest('.day')) dayPin.closest('.day').classList.add('is-pinned');
+      } else if (track && rail) {
+        // на телефоне ленту листают пальцем: кадры сдвигаются от прокрутки самой ленты
+        panMoments(function (m) {
+          return { trigger: m, scroller: rail, horizontal: true, start: 'left right', end: 'right left', scrub: true };
+        });
       }
       // без пина лента листается сама: прокрутку прячем только под пином
       return function () { var dayBox = q('.day'); if (dayBox) dayBox.classList.remove('is-pinned'); };

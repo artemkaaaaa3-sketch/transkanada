@@ -178,7 +178,7 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .day__track{display:flex;gap:clamp(16px,2vw,28px);width:max-content;padding-right:var(--pad)}
 /* ширина карточки от высоты окна: закреплённая лента помещается целиком и на ноутбуке с масштабом 125 % */
 .moment{flex:none;width:clamp(240px,calc(100svh - 380px),440px)}
-.moment__pic{aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;background:var(--spruce)}
+.moment__pic{position:relative;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;clip-path:inset(0 round var(--r));background:var(--spruce)}
 @media (min-width:900px){.moment__pic{aspect-ratio:1/1}}
 .moment__pic img{width:100%;height:100%;object-fit:cover}
 .moment__time{margin-top:16px;font:800 var(--t-h2)/1 var(--display);letter-spacing:-.01em;color:var(--larch);font-variant-numeric:tabular-nums}
@@ -304,11 +304,13 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .phero{position:relative;display:flex;align-items:flex-end;min-height:clamp(440px,64svh,660px);overflow:hidden;background:var(--night)}
 .phero__media{position:absolute;inset:0}
 .phero__media img{width:100%;height:100%;object-fit:cover}
-.phero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,21,18,.62) 0%,rgba(11,21,18,.3) 30%,rgba(11,21,18,.72) 56%,rgba(11,21,18,.95) 100%)}
-.phero__in{position:relative;padding-top:calc(var(--head-h) + 40px);padding-bottom:clamp(40px,6vw,80px)}
+.phero__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,21,18,.62) 0%,rgba(11,21,18,.16) 26%,rgba(11,21,18,.34) 52%,rgba(11,21,18,.86) 80%,var(--night) 100%)}
+.phero__in{position:relative;padding-top:calc(var(--head-h) + 40px);padding-bottom:clamp(32px,4.5vw,56px)}
 .phero__h1{font:800 var(--t-h1)/.95 var(--display);letter-spacing:-.02em;max-width:16ch;text-wrap:balance}
 .phero__lead{margin-top:20px;font-size:var(--t-lg);line-height:1.35;max-width:40ch}
 .phero--plain{min-height:0}
+/* титр стоит на нижнем крае фото, содержание начинается сразу под ним: с провалом заголовок висит посередине */
+.phero+.sec:not(.light){padding-top:clamp(48px,5vw,80px)}
 .subnav{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
 .subnav a{display:inline-flex;align-items:center;min-height:44px;padding:8px 18px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--line-strong);text-decoration:none}
 .subnav a:hover{background:rgba(232,238,234,.08)}
