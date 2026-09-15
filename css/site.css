@@ -309,6 +309,8 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .phero__h1{font:800 var(--t-h1)/.95 var(--display);letter-spacing:-.02em;max-width:16ch;text-wrap:balance}
 .phero__lead{margin-top:20px;font-size:var(--t-lg);line-height:1.35;max-width:40ch}
 .phero--plain{min-height:0}
+/* длинные юридические заголовки на телефоне: при 44 px «обработки» и «персональных» стояли в строке одни */
+@media (max-width:600px){.phero--plain .phero__h1{max-width:none;font-size:clamp(22px,7vw,44px)}}
 /* титр стоит на нижнем крае фото, содержание начинается сразу под ним: с провалом заголовок висит посередине */
 .phero+.sec:not(.light){padding-top:clamp(48px,5vw,80px)}
 .subnav{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
@@ -382,6 +384,7 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .opt{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:8px 14px;border-radius:var(--r);box-shadow:inset 0 0 0 1px var(--line-d);cursor:pointer}
 .opt input{width:20px;height:20px;margin:0;flex:none;accent-color:var(--ink)}
 .opt:has(input:checked){box-shadow:inset 0 0 0 2px var(--ink)}
+.opt:has(input:disabled){cursor:default}
 .calc__total{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px 16px}
 .calc__total b{font:800 var(--t-h2)/1 var(--display);letter-spacing:-.01em;white-space:nowrap}
 .calc__note{font-size:var(--t-xs);color:var(--granite)}
@@ -596,7 +599,7 @@ body.menu-open .dock{display:none}
 .dest:not(:last-child){margin-bottom:40svh}
 @media (max-width:760px){.sec__head{grid-template-columns:minmax(0,1fr)}.sec__head .link-arrow{justify-self:start}}
 .h2 .ln{display:block}
-.drow__note{display:block;margin-top:4px;font-weight:400;color:var(--fg2)}
+.drow__note{display:block;margin-top:4px;font:400 var(--t-xs)/1.35 var(--text);color:var(--fg2)}
 #included+#honest{padding-top:0}
 .light{--err:#A6391C}
 /* ошибка формы встаёт под своим полем */

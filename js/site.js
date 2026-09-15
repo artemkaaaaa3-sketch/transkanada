@@ -42,6 +42,8 @@
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     burger.setAttribute('aria-label', open ? 'Закрыть меню' : 'Меню');
     doc.body.style.overflow = open ? 'hidden' : '';
+    // полоса прокрутки пропадает только на время блокировки: место под неё держим, чтобы вёрстка не съезжала вбок
+    doc.documentElement.style.scrollbarGutter = open ? 'stable' : '';
     // пункты стоят в разметке до бургера: без этого Tab из бургера уходит в страницу под меню
     if (open && getComputedStyle(burger).display !== 'none') {
       var first = q('.head__menu a, .head__menu button');
@@ -235,8 +237,11 @@
       if (isDialog) {
         if (!dlg.open) dlg.showModal();
         doc.body.style.overflow = 'hidden';
+        doc.documentElement.style.scrollbarGutter = 'stable';
       } else {
         form.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        // третий разбор: после прокрутки к форме фокус остаётся на body, с клавиатуры человек теряет место
+        fName.focus({ preventScroll: true });
       }
     };
     var closeBook = function () {
@@ -290,7 +295,7 @@
     });
     [q('#bookClose'), q('#bOkClose')].forEach(function (b) { if (b) b.addEventListener('click', closeBook); });
     if (isDialog) {
-      dlg.addEventListener('close', function () { doc.body.style.overflow = ''; });
+      dlg.addEventListener('close', function () { doc.body.style.overflow = ''; doc.documentElement.style.scrollbarGutter = ''; });
       dlg.addEventListener('click', function (e) { if (e.target === dlg) closeBook(); });
     }
     if (!isDialog) fillDates('', '');
