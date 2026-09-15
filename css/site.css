@@ -131,7 +131,9 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .hero__stage{position:absolute;inset:0;overflow:hidden}
 .hero__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero__mask{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:clamp(140px,26svh,280px);background:var(--night);mix-blend-mode:multiply;pointer-events:none}
-.hero__word{display:block;font:800 var(--t-mega)/.8 var(--display);letter-spacing:-.015em;text-transform:uppercase;white-space:nowrap;color:#fff;transform-origin:50% 60%;will-change:transform}
+/* слово стоит по линейке: кегль от ширины контейнера, ширина букв «КАНАДА» — 4,4066 кегля, поле первой буквы 0,0469 */
+.hero__fit{container-type:inline-size}
+.hero__word{display:block;font:800 calc(100cqi / 4.4066)/.8 var(--display);margin-left:-.0469em;letter-spacing:-.015em;text-transform:uppercase;white-space:nowrap;color:#fff;transform-origin:50% 60%;will-change:transform}
 .hero__shade{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(180deg,rgba(11,21,18,.55) 0%,rgba(11,21,18,0) 24%,rgba(11,21,18,.12) 42%,rgba(11,21,18,.78) 66%,rgba(11,21,18,.94) 100%)}
 .hero__copy{position:absolute;left:0;right:0;bottom:0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 40px;padding-bottom:clamp(28px,5svh,56px)}
 .hero__h1{font:800 clamp(34px,12px + 4.2vw,76px)/1.02 var(--display);letter-spacing:-.015em;max-width:14ch;text-wrap:balance}
@@ -288,7 +290,9 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 
 /* ── подвал ── */
 .foot{padding-top:clamp(56px,8vw,120px);background:var(--night)}
-.foot__word{display:block;padding-inline:2vw;text-align:center;font:900 11.4vw/.82 var(--display);letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;background:url("../img/foot-mountains.jpg") center 58%/cover;-webkit-background-clip:text;background-clip:text;user-select:none}
+/* слово в подвале по линейке сайта: кегль от ширины контейнера, ширина букв «ТРАНСКАНАДА» — 7,8555 кегля, поле 0,0156 */
+.foot__fit{container-type:inline-size}
+.foot__word{display:block;text-align:left;font:900 calc(100cqi / 7.8555)/.82 var(--display);margin-left:-.0156em;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;background:url("../img/foot-mountains.jpg") center 58%/cover;-webkit-background-clip:text;background-clip:text;user-select:none}
 .foot__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;padding-block:clamp(40px,6vw,80px);border-bottom:1px solid var(--line)}
 .foot__h{margin-bottom:10px;font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lichen)}
 .foot__col a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
