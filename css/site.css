@@ -35,6 +35,7 @@
   --sec:clamp(96px,11vw,176px);
   --r:14px;
   --head-h:72px;
+  --err:#F2A48C;
   --ease:cubic-bezier(.2,.7,.2,1);
 }
 
@@ -133,7 +134,7 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .hero__word{display:block;font:800 var(--t-mega)/.8 var(--display);letter-spacing:-.015em;text-transform:uppercase;white-space:nowrap;color:#fff;transform-origin:50% 60%;will-change:transform}
 .hero__shade{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(180deg,rgba(11,21,18,.55) 0%,rgba(11,21,18,0) 24%,rgba(11,21,18,.12) 42%,rgba(11,21,18,.78) 66%,rgba(11,21,18,.94) 100%)}
 .hero__copy{position:absolute;left:0;right:0;bottom:0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 40px;padding-bottom:clamp(28px,5svh,56px)}
-.hero__h1{font:800 clamp(32px,22px + 2.6vw,56px)/1.02 var(--display);letter-spacing:-.015em;max-width:14ch;text-wrap:balance}
+.hero__h1{font:800 clamp(34px,12px + 4.2vw,76px)/1.02 var(--display);letter-spacing:-.015em;max-width:14ch;text-wrap:balance}
 .hero__lead{margin-top:14px;max-width:40ch;color:var(--frost)}
 .hero__cta{display:flex;flex-wrap:wrap;gap:12px}
 @media (max-width:600px){.hero__cta{width:100%}.hero__cta .btn{flex:1 1 100%}}
@@ -173,7 +174,7 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .day__head .kicker{grid-column:1/-1;margin:0}
 .day__sub{color:var(--lichen);max-width:34ch}
 @media (max-width:760px){.day__head{grid-template-columns:minmax(0,1fr)}}
-.day__rail{overflow:hidden;padding-left:max(var(--pad),calc((100vw - var(--wrap)) / 2))}
+.day__rail{overflow-x:auto;padding-left:max(var(--pad),calc((100% - var(--wrap)) / 2))}
 .day__track{display:flex;gap:clamp(16px,2vw,28px);width:max-content;padding-right:var(--pad)}
 .moment{flex:none;width:clamp(340px,calc(54vh * .8),440px)}
 @media (min-width:900px){.moment__pic{aspect-ratio:1/1}}
@@ -503,7 +504,7 @@ dialog{padding:0;border:0;color:inherit;background:transparent}
 .check{display:flex;align-items:flex-start;gap:12px;min-height:44px;font-size:var(--t-xs);line-height:1.45;color:var(--fg2);cursor:pointer}
 .check input{width:22px;height:22px;margin:0;flex:none;accent-color:var(--larch)}
 .check a{color:var(--fg)}
-.err{min-height:1.45em;font-size:var(--t-xs);color:var(--larch)}
+.err{min-height:1.45em;font-size:var(--t-xs);color:var(--err)}
 .book__ok p{color:var(--lichen)}
 .book__ok .btn{justify-self:start}
 .book--inline{width:auto;max-height:none;box-shadow:none}
@@ -582,3 +583,30 @@ body.menu-open .dock{display:none}
   .rv-ready .rv{opacity:1;transform:none;transition:none}
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* ── второй разбор куратора, 15 сентября 2026 ── */
+/* лента дня листается сама; прокрутку прячем, только когда её ведёт пин GSAP */
+.day.is-pinned .day__rail{overflow:hidden}
+/* стопка направлений: пауза перед наездом следующей панели, переход по ссылке ставит панель к верху окна */
+.dest{scroll-margin-top:calc(-12px - var(--head-h))}
+.dest:not(:last-child){margin-bottom:40svh}
+@media (max-width:760px){.sec__head{grid-template-columns:minmax(0,1fr)}.sec__head .link-arrow{justify-self:start}}
+.h2 .ln{display:block}
+.drow__note{display:block;margin-top:4px;font-weight:400;color:var(--fg2)}
+#included+#honest{padding-top:0}
+.light{--err:#A6391C}
+/* ошибка формы встаёт под своим полем */
+.fld2{grid-auto-flow:row dense}
+.fld2>.err{grid-column:1/-1}
+.fld input[aria-invalid=true],.fld select[aria-invalid=true]{border-color:var(--err);box-shadow:inset 0 0 0 1px var(--err)}
+.check input[aria-invalid=true]{outline:2px solid var(--err);outline-offset:2px}
+/* пауза для роликов страницы */
+.vpause{position:absolute;z-index:6;top:calc(var(--head-h) + 12px);right:var(--pad);display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid rgba(232,238,234,.4);border-radius:50%;background:rgba(11,21,18,.5);color:var(--frost);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.vpause::before,.vpause::after{content:"";grid-area:1/1;width:4px;height:14px;border-radius:1px;background:currentColor}
+.vpause::before{transform:translateX(-4px)}
+.vpause::after{transform:translateX(4px)}
+.vpause[aria-pressed=true]::before{width:0;height:0;border-radius:0;background:none;border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent currentColor;transform:translateX(2px)}
+.vpause[aria-pressed=true]::after{display:none}
+.vpause:hover{background:rgba(11,21,18,.72)}
+/* четыре и два пункта «Что стоит знать» — в две колонки: в четыре строка сжималась до 20 знаков */
+@media (min-width:1200px){.honest:has(>li:nth-child(4)),.honest:not(:has(>li:nth-child(3))){grid-template-columns:repeat(2,minmax(0,1fr))}}

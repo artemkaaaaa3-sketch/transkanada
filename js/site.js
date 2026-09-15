@@ -105,6 +105,9 @@
   });
 
   /* ── ролики: адрес подставляем, когда блок доехал до экрана; играет только видимый ── */
+  // пауза для всех роликов страницы (WCAG 2.2.2): выбор помним между страницами
+  var videosOff = false;
+  try { videosOff = localStorage.getItem('tk-video-off') === '1'; } catch (e) {}
   function loadVideo(v) {
     if (v.dataset.loaded) return true;
     if (small && v.hasAttribute('data-desktop-only')) return false;
@@ -115,7 +118,7 @@
     return true;
   }
   function playVideo(v) {
-    if (reduce || saveData || !loadVideo(v)) return;
+    if (videosOff || reduce || saveData || !loadVideo(v)) return;
     var p = v.play();
     if (p && p.catch) p.catch(function () {});
   }
@@ -152,6 +155,30 @@
     }, { threshold: [0, 0.55] });
     vids.forEach(function (v) { vio.observe(v); });
   }
+  var vpBtns = qa('.vpause');
+  var syncPause = function () {
+    vpBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', videosOff ? 'true' : 'false');
+      b.setAttribute('aria-label', videosOff ? 'Включить видео' : 'Остановить видео');
+    });
+  };
+  vpBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      videosOff = !videosOff;
+      try { localStorage.setItem('tk-video-off', videosOff ? '1' : '0'); } catch (e) {}
+      syncPause();
+      if (videosOff) {
+        qa('video').forEach(function (v) { if (!v.paused) v.pause(); });
+        return;
+      }
+      if (destVids.length) destVideos();
+      vids.forEach(function (v) {
+        var r = v.getBoundingClientRect();
+        if (r.bottom > innerHeight * 0.3 && r.top < innerHeight * 0.7) playVideo(v);
+      });
+    });
+  });
+  syncPause();
 
   /* ── местное время в панелях направлений ── */
   var clocks = qa('[data-tz]');
@@ -260,13 +287,21 @@
       if (!fName.value.trim()) msg = 'Напишите, как к вам обращаться.';
       else if (tel.replace(/\D/g, '').length < 10 && !/^@?[a-z0-9_]{5,}$/i.test(tel)) msg = 'Нужен телефон или имя пользователя в Telegram.';
       else if (fAgree && !fAgree.checked) msg = 'Отметьте согласие на обработку данных: без него мы не можем вам написать.';
+      [fName, fTel, fAgree].forEach(function (f) { if (f) { f.removeAttribute('aria-invalid'); f.removeAttribute('aria-describedby'); } });
       err.textContent = typo(msg);
       if (msg) {
-        // строка ошибки стоит под формой, далеко от поля: фокус ставим в то, что нужно поправить
+        // ошибка встаёт сразу под полем, которое нужно поправить: строку под формой на телефоне
+        // закрывает клавиатура (второй куратор, 15 сентября 2026)
         var telOk = tel.replace(/\D/g, '').length >= 10 || /^@?[a-z0-9_]{5,}$/i.test(tel);
-        (!fName.value.trim() ? fName : !telOk ? fTel : (fAgree || fTel)).focus();
+        var bad = !fName.value.trim() ? fName : !telOk ? fTel : (fAgree || fTel);
+        bad.setAttribute('aria-invalid', 'true');
+        bad.setAttribute('aria-describedby', err.id);
+        var holder = bad.closest('.fld, .check') || bad;
+        holder.parentNode.insertBefore(err, holder.nextSibling);
+        bad.focus();
         return;
       }
+      form.insertBefore(err, form.querySelector('[type=submit]'));
       var t = tourById(fTour.value), d = dateById(fDate.value);
       okText.textContent = typo((t ? t.name : 'Поездка по Канаде') + (d ? ', ' + d.when : '') +
         '. Ответим в течение часа в рабочее время: пришлём программу, договор и список документов для визы.');
@@ -475,7 +510,10 @@
             end: function () { return '+=' + dist(); }
           }
         });
+        if (dayPin.closest('.day')) dayPin.closest('.day').classList.add('is-pinned');
       }
+      // без пина лента листается сама: прокрутку прячем только под пином
+      return function () { var dayBox = q('.day'); if (dayBox) dayBox.classList.remove('is-pinned'); };
     });
     addEventListener('load', function () { ScrollTrigger.refresh(); });
   }
