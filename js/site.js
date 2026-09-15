@@ -455,20 +455,41 @@
           .to('.hero__shade', { opacity: 1, duration: 0.6 }, 0.4);
       }
 
-      var dests = qa('.dest');
+      // Панели направлений. Разбор куратора курсов, 15 сентября 2026: «скроллы усилить на основных блоках».
+      // Следующая панель входит карточкой со скруглёнными углами и раскрывается на весь экран, фото в ней отъезжает
+      // с 1,3 до 1, строки текста поднимаются по очереди. Предыдущая панель в это время уходит в темноту: гаснет текст,
+      // фото уменьшается под вуалью. Границы считаем от контейнера .dests: панели липкие, и замер по прилипшей панели врёт.
+      // Вход и уход анимируют разные элементы, чтобы твины разных панелей не спорили за одно свойство. На телефоне без
+      // раскрытия карточкой: clip-path на весь экран с роликом там дорог.
+      var destsBox = q('.dests'), dests = qa('.dest');
+      // Верх панели в потоке меряем с отключённым прилипанием: панели идут не встык (замер 15 сентября 2026 — шаг
+      // 1022 px при высоте 730), и расчёт «номер × высота» запускал вход следующей панели на 292 px раньше.
+      var destTop = function (i) {
+        var d = dests[i];
+        d.style.position = 'relative';
+        var top = d.getBoundingClientRect().top + scrollY;
+        d.style.position = '';
+        return top;
+      };
       dests.forEach(function (d, i) {
-        var media = q('.dest__media', d), inner = q('.dest__in', d), next = dests[i + 1];
-        if (media) {
-          gsap.fromTo(media, { scale: 1.14 }, {
-            scale: 1, ease: 'none',
-            scrollTrigger: { trigger: d, start: 'top bottom', end: 'top top', scrub: true }
-          });
-        }
-        if (next && inner) {
-          gsap.to(inner, {
-            opacity: 0.12, y: -48, ease: 'none',
-            scrollTrigger: { trigger: next, start: 'top 80%', end: 'top 10%', scrub: true }
-          });
+        var media = q('.dest__media', d), prev = dests[i - 1];
+        var words = qa('.dest__name, .dest__line, .dest__main .btn, .dest__facts > div', d);
+        var tl = gsap.timeline({
+          defaults: { ease: 'none', immediateRender: false },
+          scrollTrigger: {
+            trigger: destsBox, scrub: 0.4, invalidateOnRefresh: true,
+            start: function () { return destTop(i) - innerHeight; },
+            end: function () { return destTop(i); }
+          }
+        });
+        if (c.wide) tl.fromTo(d, { clipPath: 'inset(18% 8% 0% 8% round 32px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1 }, 0);
+        if (media) tl.fromTo(media, { scale: c.wide ? 1.3 : 1.18 }, { scale: 1, duration: 1 }, 0);
+        if (words.length) tl.fromTo(words, { y: 64, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, stagger: 0.04 }, 0.5);
+        if (prev) {
+          var veil = q('.dest__veil', prev), pin = q('.dest__in', prev), shot = q('.dest__media img, .dest__media video', prev);
+          if (veil) tl.fromTo(veil, { opacity: 0 }, { opacity: 0.72, duration: 1 }, 0);
+          if (pin) tl.fromTo(pin, { y: 0, opacity: 1 }, { y: -80, opacity: 0, duration: 0.7 }, 0);
+          if (shot && c.wide) tl.fromTo(shot, { scale: 1 }, { scale: 0.9, duration: 1 }, 0);
         }
       });
 

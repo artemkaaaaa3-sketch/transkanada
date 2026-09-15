@@ -5,6 +5,9 @@
 
 @font-face{font-family:"Commissioner";src:url("../fonts/commissioner.woff2?v=34aa32dc") format("woff2");font-weight:600 900;font-style:normal;font-display:swap}
 @font-face{font-family:"Golos Text";src:url("../fonts/golos-text.woff2?v=51f03b08") format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
+/* š в имени автора фото на странице авторов: отдельный файл на 2 КБ с unicode-range. Браузер берёт его только там, где знак есть,
+   а основной файл Golos не толстеет — пересборка с одним этим знаком раздувала его с 28 до 69 КБ (15 сентября 2026). */
+@font-face{font-family:"Golos Text";src:url("../fonts/golos-text-latin-ext.woff2?v=3bf0ec6b") format("woff2");font-weight:400 600;font-style:normal;font-display:swap;unicode-range:U+0161}
 /* Запасной Arial подогнан по ширине под веб-шрифты (замер 14.09.2026: Golos шире Arial на 7 % по подбору на первых экранах всех страниц,
    Commissioner 800 уже Arial Bold на 3,3 %). Пока файлы грузятся, строки переносятся так же,
    и первый экран не прыгает. */
@@ -144,11 +147,17 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 /* ── вступление ── */
 .intro__big{font:800 var(--t-h2)/1.08 var(--display);letter-spacing:-.015em;max-width:26ch;text-wrap:pretty}
 .intro__list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px 20px;margin-top:clamp(40px,6vw,72px)}
-.intro__list a{display:flex;flex-direction:column;gap:6px;min-height:44px;padding-top:18px;border-top:2px solid var(--line);text-decoration:none;transition:border-color .25s var(--ease)}
-.intro__list a:hover{border-color:var(--larch)}
+.intro__list a{display:flex;flex-direction:column;gap:14px;min-height:44px;text-decoration:none}
+.intro__pic{position:relative;display:block;aspect-ratio:4/5;border-radius:var(--r);overflow:hidden;background:var(--spruce)}
+.intro__pic img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.intro__pic::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px var(--line);pointer-events:none}
+.intro__line{display:block;height:2px;background:var(--line);transition:background-color .25s var(--ease)}
+.intro__txt{display:flex;flex-direction:column;gap:6px;align-self:flex-start}
+.intro__list a:hover .intro__line{background:var(--larch)}
+.intro__list a:hover .intro__pic img{transform:scale(1.06)}
 .intro__name{font:600 var(--t-lg)/1.2 var(--text)}
 .intro__lon{font-size:var(--t-xs);color:var(--lichen)}
-@media (max-width:900px){.intro__list{grid-template-columns:repeat(2,minmax(0,1fr))}.intro__list>:last-child:nth-child(odd){grid-column:1/-1;width:100%}.intro__list>:last-child:nth-child(odd) a{flex-direction:row;justify-content:space-between;align-items:baseline}}
+@media (max-width:900px){.intro__list{grid-template-columns:repeat(2,minmax(0,1fr))}.intro__list>:last-child:nth-child(odd){grid-column:1/-1;width:100%}.intro__list>:last-child:nth-child(odd) .intro__pic{aspect-ratio:2/1}.intro__list>:last-child:nth-child(odd) .intro__txt{flex-direction:row;align-items:baseline;gap:12px}}
 
 /* ── пять Канад: панели ложатся друг на друга ── */
 .dests{position:relative}
@@ -156,8 +165,14 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .dest+.dest{box-shadow:0 -24px 48px rgba(0,0,0,.35)}
 .dest__media{position:absolute;inset:0;transform-origin:50% 60%}
 .dest__media img,.dest__media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.dest__media::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,21,18,.66) 0%,rgba(11,21,18,.08) 24%,rgba(11,21,18,.12) 44%,rgba(11,21,18,.88) 76%,rgba(11,21,18,.96) 100%)}
-.dest__in{position:relative;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding-top:calc(var(--head-h) + 16px);padding-bottom:clamp(22px,4svh,44px)}
+.dest__media::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,21,18,.5) 0%,rgba(11,21,18,.18) 38%,rgba(11,21,18,0) 60%),linear-gradient(180deg,rgba(11,21,18,.66) 0%,rgba(11,21,18,.08) 24%,rgba(11,21,18,.12) 44%,rgba(11,21,18,.88) 76%,rgba(11,21,18,.96) 100%)}
+.dest__veil{position:absolute;inset:0;z-index:1;background:var(--night);opacity:0;pointer-events:none}
+/* Фокус клавиатуры внутри панели: панель раскрыта, вуаль снята, текст и кнопка видны сразу, не дожидаясь прокрутки.
+   Иначе Tab попадал на «Смотреть маршрут» с прозрачностью 0 у панели, ушедшей под следующую (focus.js, 15 сентября 2026). */
+.dest:focus-within{clip-path:none!important}
+.dest:focus-within .dest__veil{opacity:0!important}
+.dest:focus-within .dest__in,.dest:focus-within .dest__name,.dest:focus-within .dest__line,.dest:focus-within .dest__main .btn,.dest:focus-within .dest__facts>div{opacity:1!important;transform:none!important}
+.dest__in{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding-top:calc(var(--head-h) + 16px);padding-bottom:clamp(22px,4svh,44px)}
 .dest__top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .dest__time{flex:none;padding-top:4px;font-size:var(--t-xs);text-align:right}
 .dest__time b{display:block;margin-top:2px;font:800 var(--t-lg)/1.1 var(--display);font-variant-numeric:tabular-nums}
@@ -251,6 +266,22 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .rcard__who{display:flex;align-items:center;gap:14px}
 .rcard__who b{display:block;font-weight:600}
 .rcard__who span{display:block;font-size:var(--t-xs);color:var(--lichen)}
+/* «О нас»: фоновые фото по смыслу блоков — разбор куратора курсов, 15 сентября 2026 */
+.sec--photo{position:relative;overflow:hidden;isolation:isolate}
+.sec__photo{position:absolute;inset:0;z-index:-1}
+.sec__photo img{width:100%;height:100%;object-fit:cover}
+.sec__photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,21,18,.84) 0%,rgba(11,21,18,.46) 40%,rgba(11,21,18,.62) 70%,rgba(11,21,18,.9) 100%)}
+.sec--photo .card{background:rgba(11,21,18,.6);box-shadow:inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.sec--side{position:relative;overflow:hidden;isolation:isolate}
+.side__pic{position:absolute;top:0;right:0;bottom:0;width:54%;z-index:-1}
+.side__pic img{width:100%;height:100%;object-fit:cover;object-position:30% 72%}
+@media (min-width:901px){.sec--side .sec__head,.sec--side .cards3{max-width:44%}.sec--side .cards3{grid-template-columns:1fr}}
+.side__pic::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--milk) 0%,rgba(238,242,239,.5) 14%,rgba(238,242,239,0) 34%)}
+#reviews.revs .revs__bg img{filter:blur(8px) saturate(1.05)}
+#reviews.revs .revs__bg::after{background:rgba(11,21,18,.5)}
+.revs .rgrid .rcard{background:rgba(11,21,18,.58);box-shadow:inset 0 0 0 1px var(--line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media (max-width:900px){.side__pic{position:relative;width:auto;height:min(62vw,420px);margin:calc(var(--sec) * -1) 0 28px}.side__pic::after{background:linear-gradient(0deg,var(--milk) 0%,rgba(238,242,239,0) 45%)}}
+@media (max-width:760px){.sec--photo .cards3{gap:12px}.sec--photo .card{padding:18px 18px 16px;border-top:0;border-radius:var(--r);background:rgba(11,21,18,.68);box-shadow:inset 0 0 0 1px var(--line)}}
 @media (max-width:760px){.rcards{grid-template-columns:1fr}}
 @media (min-width:761px) and (max-width:1199px){
   .rcards{display:flex;overflow-x:auto;margin-inline:calc(var(--pad) * -1);padding-inline:var(--pad);scroll-snap-type:x mandatory;scroll-padding-inline:var(--pad);scrollbar-width:none}
