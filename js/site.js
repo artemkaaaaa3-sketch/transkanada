@@ -105,9 +105,9 @@
   });
 
   /* ── ролики: адрес подставляем, когда блок доехал до экрана; играет только видимый ── */
-  // пауза для всех роликов страницы (WCAG 2.2.2): выбор помним между страницами
-  var videosOff = false;
-  try { videosOff = localStorage.getItem('tk-video-off') === '1'; } catch (e) {}
+  // кнопки паузы больше нет: фон двигается всегда. Старый выбор «выключить видео» стираем, иначе ролики у того,
+  // кто нажимал паузу, так и стояли бы
+  try { localStorage.removeItem('tk-video-off'); } catch (e) {}
   function loadVideo(v) {
     if (v.dataset.loaded) return true;
     if (small && v.hasAttribute('data-desktop-only')) return false;
@@ -118,7 +118,7 @@
     return true;
   }
   function playVideo(v) {
-    if (videosOff || reduce || saveData || !loadVideo(v)) return;
+    if (reduce || saveData || !loadVideo(v)) return;
     var p = v.play();
     if (p && p.catch) p.catch(function () {});
   }
@@ -155,30 +155,6 @@
     }, { threshold: [0, 0.55] });
     vids.forEach(function (v) { vio.observe(v); });
   }
-  var vpBtns = qa('.vpause');
-  var syncPause = function () {
-    vpBtns.forEach(function (b) {
-      b.setAttribute('aria-pressed', videosOff ? 'true' : 'false');
-      b.setAttribute('aria-label', videosOff ? 'Включить видео' : 'Остановить видео');
-    });
-  };
-  vpBtns.forEach(function (b) {
-    b.addEventListener('click', function () {
-      videosOff = !videosOff;
-      try { localStorage.setItem('tk-video-off', videosOff ? '1' : '0'); } catch (e) {}
-      syncPause();
-      if (videosOff) {
-        qa('video').forEach(function (v) { if (!v.paused) v.pause(); });
-        return;
-      }
-      if (destVids.length) destVideos();
-      vids.forEach(function (v) {
-        var r = v.getBoundingClientRect();
-        if (r.bottom > innerHeight * 0.3 && r.top < innerHeight * 0.7) playVideo(v);
-      });
-    });
-  });
-  syncPause();
 
   /* ── местное время в панелях направлений ── */
   var clocks = qa('[data-tz]');
