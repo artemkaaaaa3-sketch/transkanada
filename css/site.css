@@ -631,7 +631,9 @@ body.menu-open .dock{display:none}
 .day.is-pinned .day__rail{overflow:hidden}
 /* стопка направлений: пауза перед наездом следующей панели, переход по ссылке ставит панель к верху окна */
 .dest{scroll-margin-top:calc(-12px - var(--head-h))}
-.dest:not(:last-child){margin-bottom:40svh}
+/* Пауза между панелями. Было 40svh: на тачпаде ноутбука каждую панель листали в 3–4 движения (15 сентября 2026). Меньше 120 px нельзя:
+   нижний текст панели должен быть виден целиком от 200 px прокрутки, иначе щелчок колеса его проскакивает (sticky-cover.js) */
+.dest:not(:last-child){margin-bottom:clamp(120px,16svh,180px)}
 @media (max-width:760px){.sec__head{grid-template-columns:minmax(0,1fr)}.sec__head .link-arrow{justify-self:start}}
 .h2 .ln{display:block}
 .drow__note{display:block;margin-top:4px;font:400 var(--t-xs)/1.35 var(--text);color:var(--fg2)}
