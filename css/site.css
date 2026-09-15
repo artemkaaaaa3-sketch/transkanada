@@ -3,8 +3,8 @@
    Шрифты по ролям: Commissioner — заголовки, Golos Text — текст, кнопки, меню, поля.
    Кегли — шесть ступеней, соседние отличаются не меньше чем в 1,2 раза. */
 
-@font-face{font-family:"Commissioner";src:url("../fonts/commissioner.woff2") format("woff2");font-weight:600 900;font-style:normal;font-display:swap}
-@font-face{font-family:"Golos Text";src:url("../fonts/golos-text.woff2") format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
+@font-face{font-family:"Commissioner";src:url("../fonts/commissioner.woff2?v=34aa32dc") format("woff2");font-weight:600 900;font-style:normal;font-display:swap}
+@font-face{font-family:"Golos Text";src:url("../fonts/golos-text.woff2?v=51f03b08") format("woff2");font-weight:400 600;font-style:normal;font-display:swap}
 /* Запасной Arial подогнан по ширине под веб-шрифты (замер 14.09.2026: Golos шире Arial на 7 % по подбору на первых экранах всех страниц,
    Commissioner 800 уже Arial Bold на 3,3 %). Пока файлы грузятся, строки переносятся так же,
    и первый экран не прыгает. */
@@ -292,7 +292,7 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .foot{padding-top:clamp(56px,8vw,120px);background:var(--night)}
 /* слово в подвале по линейке сайта: кегль от ширины контейнера, ширина букв «ТРАНСКАНАДА» — 7,8555 кегля, поле 0,0156 */
 .foot__fit{container-type:inline-size}
-.foot__word{display:block;text-align:left;font:900 calc(100cqi / 7.8555)/.82 var(--display);margin-left:-.0156em;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;background:url("../img/foot-mountains.jpg") center 58%/cover;-webkit-background-clip:text;background-clip:text;user-select:none}
+.foot__word{display:block;text-align:left;font:900 calc(100cqi / 7.8555)/.82 var(--display);margin-left:-.0156em;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;background:url("../img/foot-mountains.jpg?v=a5095db1") center 58%/cover;-webkit-background-clip:text;background-clip:text;user-select:none}
 .foot__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;padding-block:clamp(40px,6vw,80px);border-bottom:1px solid var(--line)}
 .foot__h{margin-bottom:10px;font-size:var(--t-xs);font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--lichen)}
 .foot__col a{display:inline-flex;align-items:center;min-height:44px;text-decoration:none}
