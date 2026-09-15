@@ -318,6 +318,12 @@ html{scroll-padding-top:calc(var(--head-h) + 12px)}
 .cta__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,21,18,.94) 0%,rgba(11,21,18,.66) 55%,rgba(11,21,18,.4) 100%)}
 .cta__lead{margin-top:20px;font-size:var(--t-lg);line-height:1.35;max-width:34ch}
 .cta__btns{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+/* Призыв по центру: справа на фото однотонная гора без информации, левая линия оставляла пустоту. Отступление от раскладки
+   по левому краю — по разбору куратора курсов при утверждении сайта, 15 сентября 2026. Затемнение — от центра, под текстом */
+.cta--center{justify-content:center;text-align:center}
+.cta--center .h2,.cta--center .cta__lead{margin-inline:auto}
+.cta--center .cta__btns{justify-content:center}
+.cta--center .cta__bg::after{background:radial-gradient(ellipse 75% 85% at 50% 50%,rgba(11,21,18,.86) 0%,rgba(11,21,18,.66) 55%,rgba(11,21,18,.46) 100%)}
 
 /* ── подвал ── */
 .foot{padding-top:clamp(56px,8vw,120px);background:var(--night)}
